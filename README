@@ -1,0 +1,13 @@
+Simple lightweight dependency injectionn for android. 
+Basic principes
+  - activity is a container
+  - there are 2 scopes:
+      - activity instance alive
+      - activity in foreground
+  - configuration via annotations
+  - injection triggered manually,  or via inherited base activity class
+
+Contributions and ideas welcome.
+
+
+   
