@@ -5,7 +5,6 @@ import android.app.Activity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -27,7 +26,7 @@ public class Injector {
         // wal through fields
         for (Field field : extractFields(target)) {
 
-            final View annotation = field.getAnnotation(View.class);
+            final InjectView annotation = field.getAnnotation(InjectView.class);
             if (annotation != null) {
                 final android.view.View view = target.findViewById(annotation.id());
                 if (view != null) {

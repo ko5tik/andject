@@ -6,7 +6,6 @@ import android.widget.TextView;
 import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.NonStrict;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -49,9 +48,9 @@ public class ViewInjectionTest {
 
     class WithInjectableViews extends Activity {
         // shall be injected
-        @View(id = 239)
+        @InjectView(id = 239)
         private android.view.View asView;
-        @View(id = 555)
+        @InjectView(id = 555)
         private Button button;
 
     }

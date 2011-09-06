@@ -12,6 +12,6 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-public @interface View {
+public @interface InjectView {
     int id() default -1;    
 }
