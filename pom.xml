@@ -124,17 +124,16 @@
             <scope>provided</scope>
         </dependency>
         <!--  this dependency shall be BEFORE junit -->
+
         <dependency>
-            <groupId>mockit</groupId>
+            <groupId>com.googlecode.jmockit</groupId>
             <artifactId>jmockit</artifactId>
-            <version>0.996</version>
-            <scope>test</scope>
+            <version>0.999.8</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
-            <scope>test</scope>
+            <version>4.9</version>
         </dependency>
     </dependencies>
 

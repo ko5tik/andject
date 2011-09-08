@@ -45,7 +45,7 @@ public class Injector {
                         throw new WiringException(e);
                     }
                 } else {
-                    throw new WiringException(field.toString() + " view fro injection not found " + annotation.id());
+                    throw new WiringException(field.toString() + " view for injection not found: " + annotation.id());
                 }
             }
         }

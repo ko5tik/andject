@@ -9,11 +9,7 @@ import mockit.Expectations;
 import mockit.Mocked;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * test capabilities of view injection
@@ -90,15 +86,43 @@ public class ViewInjectionTest {
 
     }
 
+    /**
+     * in case null view was delievered,  proper exception shall be produced
+     *
+     * @param injectable
+     * @param textView
+     * @param button
+     */
+    @Test
+    public void testThatMissingViewsAreBombed(@Mocked final WithInjectableViews injectable,
+                                              @Mocked final TextView textView,
+                                              @Mocked final Button button) {
+
+        new Expectations() {
+            {
+                injectable.findViewById(239);
+                returns(null);
+            }
+        };
+        try {
+            Injector.startActivity(injectable);
+            fail("was expecting exception to be thrown");
+        } catch (WiringException ex) {
+            // anticipated, assure proper text
+            assertEquals("private android.view.View de.pribluda.android.andject.ViewInjectionTest$WithInjectableViews.asView view for injection not found: 239", ex.getMessage());
+        }
+    }
 
     /**
      * shall inject view into setter
      */
     @Test
-    public void testThatSetterInjectionWorksProperly(@Mocked final WithInjectableMethods injectable,
-                                                     @Mocked final TextView textView,
-                                                     @Mocked final Button button) {
-          new Expectations() {
+    public void testThatSetterInjectionWorksProperly
+            (
+                    @Mocked final WithInjectableMethods injectable,
+                    @Mocked final TextView textView,
+                    @Mocked final Button button) {
+        new Expectations() {
             {
                 injectable.findViewById(239);
                 returns(textView);
@@ -123,10 +147,12 @@ public class ViewInjectionTest {
      * shall produce wiring exception
      */
     @Test
-    public void testThatSetterInjectionIsBombedProperlyOnNonAssignability(@Mocked final WithInjectableMethods injectable,
-                                                                          @Mocked final TextView textView,
-                                                                          @Mocked final Button button) {
-          new Expectations() {
+    public void testThatSetterInjectionIsBombedProperlyOnNonAssignability
+            (
+                    @Mocked final WithInjectableMethods injectable,
+                    @Mocked final TextView textView,
+                    @Mocked final Button button) {
+        new Expectations() {
             {
                 injectable.findViewById(239);
                 returns(button);
@@ -144,6 +170,17 @@ public class ViewInjectionTest {
         }
     }
 
+    /**
+     * demonstrate errors of jmock
+     *
+     * @param injectable
+     * @throws NoSuchMethodException
+     */
+    @Test
+    public void testFailingInjection(@Mocked final WithInjectableMethods injectable) throws NoSuchMethodException {
+        assertEquals(1, WithInjectableMethods.class.getDeclaredMethod("setAsView", View.class).getAnnotations().length);
+        assertEquals(1, injectable.getClass().getDeclaredMethod("setAsView", View.class).getAnnotations().length);
+    }
 
     class WithInjectableMethods extends Activity {
 
@@ -170,4 +207,6 @@ public class ViewInjectionTest {
             this.notInjected = notInjected;
         }
     }
+
+
 }
