@@ -119,7 +119,7 @@ public class ViewInjectionTest {
     @Test
     public void testThatSetterInjectionWorksProperly
             (
-                    @Mocked final WithInjectableMethods injectable,
+                    @Mocked(methods = {"setAsView", "setButton", "notInjected"}, inverse = true) final WithInjectableMethods injectable,
                     @Mocked final TextView textView,
                     @Mocked final Button button) {
         new Expectations() {
@@ -149,9 +149,10 @@ public class ViewInjectionTest {
     @Test
     public void testThatSetterInjectionIsBombedProperlyOnNonAssignability
             (
-                    @Mocked final WithInjectableMethods injectable,
+                    @Mocked(methods = {"setAsView", "setButton", "notInjected"}, inverse = true) final WithInjectableMethods injectable,
                     @Mocked final TextView textView,
                     @Mocked final Button button) {
+
         new Expectations() {
             {
                 injectable.findViewById(239);
@@ -166,21 +167,37 @@ public class ViewInjectionTest {
             fail("was expecting exception to be thrown");
         } catch (WiringException ex) {
             // anticipated, assure proper text
-            assertEquals("private android.widget.Button de.pribluda.android.andject.ViewInjectionTest$WithInjectableViews.button is not assignable from view id 555 (android.widget.TextView)", ex.getMessage());
+            assertEquals("public void de.pribluda.android.andject.ViewInjectionTest$WithInjectableMethods.setButton(android.widget.Button) is not injectable with class android.widget.TextView", ex.getMessage());
         }
     }
 
+
     /**
-     * demonstrate errors of jmock
-     *
-     * @param injectable
-     * @throws NoSuchMethodException
+     * shall produce wiring exception
      */
     @Test
-    public void testFailingInjection(@Mocked final WithInjectableMethods injectable) throws NoSuchMethodException {
-        assertEquals(1, WithInjectableMethods.class.getDeclaredMethod("setAsView", View.class).getAnnotations().length);
-        assertEquals(1, injectable.getClass().getDeclaredMethod("setAsView", View.class).getAnnotations().length);
+    public void testThatMissingContentIsBombed
+            (
+                    @Mocked(methods = {"setAsView", "setButton", "notInjected"}, inverse = true) final WithInjectableMethods injectable,
+                    @Mocked final TextView textView,
+                    @Mocked final Button button) {
+
+        new Expectations() {
+            {
+                injectable.findViewById(239);
+                returns(null);
+
+            }
+        };
+        try {
+            Injector.startActivity(injectable);
+            fail("was expecting exception to be thrown");
+        } catch (WiringException ex) {
+            // anticipated, assure proper text
+            assertEquals("private void de.pribluda.android.andject.ViewInjectionTest$WithInjectableMethods.setAsView(android.view.View) view for injection not found 239", ex.getMessage());
+        }
     }
+
 
     class WithInjectableMethods extends Activity {
 
@@ -195,6 +212,7 @@ public class ViewInjectionTest {
 
         @InjectView(id = 239)
         private void setAsView(View asView) {
+            System.err.println("set view:" + asView);
             this.asView = asView;
         }
 

@@ -49,23 +49,32 @@ public class Injector {
                 }
             }
         }
-        
+
         // walk through methods
         for (Method method : extractMethods(target)) {
-            System.err.println("processing method " + method);
-            System.err.println("annotations:" + method.getDeclaredAnnotations().length);
+            //System.err.println("processing method " + method);
+            //System.err.println("annotations:" + method.getDeclaredAnnotations().length);
             final InjectView annotation = method.getAnnotation(InjectView.class);
             if (annotation != null) {
-                System.err.println("annotation "  + annotation);
+                //System.err.println("annotation "  + annotation);
                 final android.view.View view = target.findViewById(annotation.id());
+
                 if (view != null) {
-                    if (method.getParameterTypes().length == 1 && method.getParameterTypes()[0].getClass().isAssignableFrom(view.getClass())) {
+                    if (method.getParameterTypes().length == 1 && method.getParameterTypes()[0].isAssignableFrom(view.getClass())) {
                         // so, it can be injected
+                        try {
+                            final boolean accessible = method.isAccessible();
+                            method.setAccessible(true);
+                            method.invoke(target, view);
+                            method.setAccessible(accessible);
+                        } catch (Exception e) {
+                            throw new WiringException(e);
+                        }
                     } else {
                         throw new WiringException(method.toString() + " is not injectable with " + view.getClass());
                     }
                 } else {
-                    throw new WiringException(method.toString() + " view for injection not found" + annotation.id());
+                    throw new WiringException(method.toString() + " view for injection not found " + annotation.id());
                 }
             }
 
