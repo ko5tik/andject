@@ -39,7 +39,7 @@ public class ViewInjectionTest {
             }
         };
 
-        Injector.startActivity(injectable);
+        ViewInjector.startActivity(injectable);
 
         assertEquals(textView, Deencapsulation.getField(injectable, "asView"));
         assertEquals(button, Deencapsulation.getField(injectable, "button"));
@@ -77,7 +77,7 @@ public class ViewInjectionTest {
             }
         };
         try {
-            Injector.startActivity(injectable);
+            ViewInjector.startActivity(injectable);
             fail("was expecting exception to be thrown");
         } catch (WiringException ex) {
             // anticipated, assure proper text
@@ -105,7 +105,7 @@ public class ViewInjectionTest {
             }
         };
         try {
-            Injector.startActivity(injectable);
+            ViewInjector.startActivity(injectable);
             fail("was expecting exception to be thrown");
         } catch (WiringException ex) {
             // anticipated, assure proper text
@@ -135,7 +135,7 @@ public class ViewInjectionTest {
             }
         };
 
-        Injector.startActivity(injectable);
+        ViewInjector.startActivity(injectable);
 
         assertEquals(textView, Deencapsulation.getField(injectable, "asView"));
         assertEquals(button, Deencapsulation.getField(injectable, "button"));
@@ -163,7 +163,7 @@ public class ViewInjectionTest {
             }
         };
         try {
-            Injector.startActivity(injectable);
+            ViewInjector.startActivity(injectable);
             fail("was expecting exception to be thrown");
         } catch (WiringException ex) {
             // anticipated, assure proper text
@@ -190,7 +190,7 @@ public class ViewInjectionTest {
             }
         };
         try {
-            Injector.startActivity(injectable);
+            ViewInjector.startActivity(injectable);
             fail("was expecting exception to be thrown");
         } catch (WiringException ex) {
             // anticipated, assure proper text

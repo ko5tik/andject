@@ -13,7 +13,7 @@ import java.util.Collections;
  *
  * @author Konstantin Pribluda - konstantin@pribluda.de
  */
-public class Injector {
+public class ViewInjector {
 
     private static Field[] fieldsType = new Field[0];
     private static Method[] methodsType = new Method[0];
