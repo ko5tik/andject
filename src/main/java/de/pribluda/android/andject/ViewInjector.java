@@ -2,21 +2,15 @@ package de.pribluda.android.andject;
 
 import android.app.Activity;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Performs  dependency injection
  *
  * @author Konstantin Pribluda - konstantin@pribluda.de
  */
-public class ViewInjector {
-
-    private static Field[] fieldsType = new Field[0];
-    private static Method[] methodsType = new Method[0];
+public class ViewInjector extends BaseInjector {
 
     /**
      * injects dependencies into activity,  this scope does not need specific stop method
@@ -79,29 +73,6 @@ public class ViewInjector {
             }
 
         }
-    }
-
-    private static Field[] extractFields(Activity target) {
-        ArrayList<Field> fields = new ArrayList<Field>();
-        Collections.addAll(fields, target.getClass().getDeclaredFields());
-        Class clazz = target.getClass().getSuperclass();
-        while (clazz != null) {
-            Collections.addAll(fields, clazz.getDeclaredFields());
-            clazz = clazz.getSuperclass();
-        }
-        return fields.toArray(fieldsType);
-    }
-
-
-    private static Method[] extractMethods(Activity target) {
-        ArrayList<Method> methods = new ArrayList<Method>();
-        Collections.addAll(methods, target.getClass().getDeclaredMethods());
-        Class clazz = target.getClass().getSuperclass();
-        while (clazz != null) {
-            Collections.addAll(methods, clazz.getDeclaredMethods());
-            clazz = clazz.getSuperclass();
-        }
-        return methods.toArray(methodsType);
     }
 
     /**

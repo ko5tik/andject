@@ -14,4 +14,10 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD})
 
 public @interface InjectPreference {
+    /**
+     * preference key, required
+     * @return
+     */
+    String key();
+  
 }
