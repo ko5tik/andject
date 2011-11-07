@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public class PreferenceInjector extends BaseInjector {
     static final HashMap<Class, Class> primitves = new HashMap<Class, Class>();
+    private static final String EMPTY = "";
 
     static {
         primitves.put(Integer.TYPE, Integer.class);
@@ -30,7 +31,7 @@ public class PreferenceInjector extends BaseInjector {
      * @param target
      * @param preferences
      */
-    static void inject(Object target, SharedPreferences preferences) throws WiringException, IllegalAccessException {
+    public static void inject(Object target, SharedPreferences preferences) throws WiringException, IllegalAccessException {
         final Map<String, ?> allPreferences = preferences.getAll();
         for (Field field : extractFields(target)) {
 
@@ -38,7 +39,11 @@ public class PreferenceInjector extends BaseInjector {
             final InjectPreference injectPreference = field.getAnnotation(InjectPreference.class);
             if (injectPreference != null) {
 
-                final String key = injectPreference.key();
+                String key = injectPreference.key();
+                
+                if (EMPTY.equals(key)) {
+                    key = field.getName();
+                }
 
                 if (allPreferences.containsKey(key)) {
 

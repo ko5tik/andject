@@ -18,6 +18,6 @@ public @interface InjectPreference {
      * preference key, required
      * @return
      */
-    String key();
+    String key() default "";
   
 }

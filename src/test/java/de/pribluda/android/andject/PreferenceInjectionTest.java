@@ -3,6 +3,7 @@ package de.pribluda.android.andject;
 import android.content.SharedPreferences;
 import mockit.Deencapsulation;
 import mockit.Expectations;
+import mockit.FullVerifications;
 import mockit.Mocked;
 import org.junit.Test;
 
@@ -33,6 +34,7 @@ public class PreferenceInjectionTest {
         allMap.put("7", 7.0f);
         allMap.put("8", 8.0f);
         allMap.put("9", "number nine");
+
         new Expectations() {
             {
                 preferences.getAll();
@@ -53,6 +55,13 @@ public class PreferenceInjectionTest {
         assertEquals(7.0f, Deencapsulation.getField(primitiveInjectable, "primitiveFloat"));
         assertEquals(8.0f, Deencapsulation.getField(primitiveInjectable, "objectFloat"));
         assertEquals("number nine", Deencapsulation.getField(primitiveInjectable, "objectString"));
+
+
+        // nothing else shall be called
+        new FullVerifications() {
+            {
+            }
+        };
     }
 
 
@@ -79,5 +88,41 @@ public class PreferenceInjectionTest {
         private Float objectFloat;
         @InjectPreference(key = "9")
         String objectString;
+    }
+
+    /**
+     * in case no key is specified, property name shall be used
+     */
+    @Test
+    public void testInjectionByPropertyName(@Mocked final SharedPreferences preferences) throws IllegalAccessException {
+
+        final Map<String, Object> allMap = new HashMap<String, Object>();
+        allMap.put("justAnIntWithName", 239);
+
+        new Expectations() {
+            {
+                preferences.getAll();
+                returns(allMap);
+            }
+        };
+
+
+        final PrimitiveByPropertyInjectable primitiveByProeprtyInjectable = new PrimitiveByPropertyInjectable();
+
+        PreferenceInjector.inject(primitiveByProeprtyInjectable, preferences);
+
+        assertEquals(239, Deencapsulation.getField(primitiveByProeprtyInjectable, "justAnIntWithName"));
+
+
+        // nothing else shall be called
+        new FullVerifications() {
+            {
+            }
+        };
+    }
+
+    class PrimitiveByPropertyInjectable {
+        @InjectPreference()
+        private int justAnIntWithName;
     }
 }

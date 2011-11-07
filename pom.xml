@@ -111,7 +111,6 @@
             <scope>provided</scope>
         </dependency>
         <!--  this dependency shall be BEFORE junit -->
-
         <dependency>
             <groupId>com.googlecode.jmockit</groupId>
             <artifactId>jmockit</artifactId>
