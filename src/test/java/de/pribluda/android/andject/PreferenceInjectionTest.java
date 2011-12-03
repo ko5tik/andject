@@ -71,23 +71,23 @@ public class PreferenceInjectionTest {
     class PrimitiveInjectable {
 
         @InjectPreference(key = "1")
-        private int primitiveInt;
+        private int primitiveInt = 7;
         @InjectPreference(key = "2")
-        private Integer objectInteger;
+        private Integer objectInteger = new Integer(23);
         @InjectPreference(key = "3")
-        private long longTarget;
+        private long longTarget = 77l;
         @InjectPreference(key = "4")
-        private boolean booleanTarget;
+        private boolean booleanTarget = false;
         @InjectPreference(key = "5")
-        private double primitiveDouble;
+        private double primitiveDouble = 234.3d;
         @InjectPreference(key = "6")
-        private Double objectDouble;
+        private Double objectDouble = new Double(423.23d);
         @InjectPreference(key = "7")
-        private float primitiveFloat;
+        private float primitiveFloat = 12323.22f;
         @InjectPreference(key = "8")
-        private Float objectFloat;
+        private Float objectFloat = new Float(2343.4f);
         @InjectPreference(key = "9")
-        String objectString;
+        String objectString = "glurge glam";
     }
 
     /**
@@ -124,5 +124,44 @@ public class PreferenceInjectionTest {
     class PrimitiveByPropertyInjectable {
         @InjectPreference()
         private int justAnIntWithName;
+    }
+
+
+    /**
+     * shall eject and save properties to shared preferences
+     */
+    @Test
+    public void testEjection(@Mocked final SharedPreferences preferences,
+                             @Mocked final SharedPreferences.Editor editor) throws IllegalAccessException {
+
+        //
+        new Expectations() {
+            {
+                preferences.edit();
+                returns(editor);
+
+                editor.putInt("1", 7);
+                editor.putInt("2", new Integer(23));
+                editor.putLong("3", 77l);
+                editor.putBoolean("4", false);
+                editor.putFloat("5", 234.3f);
+                editor.putFloat("6", 423.23f);
+                editor.putFloat("7", 12323.22f);
+                editor.putFloat("8", 2343.4f);
+                editor.putString("9", "glurge glam");
+
+                editor.commit();
+
+            }
+        };
+
+        PreferenceInjector.eject(new PrimitiveInjectable(), preferences);
+
+
+        // nothing else shall be called
+        new FullVerifications() {
+            {
+            }
+        };
     }
 }

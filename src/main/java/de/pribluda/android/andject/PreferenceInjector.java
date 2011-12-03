@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public class PreferenceInjector extends BaseInjector {
     static final HashMap<Class, Class> primitves = new HashMap<Class, Class>();
+    static final HashMap<Class, Ejector> ejectors = new HashMap<Class, Ejector>();
     private static final String EMPTY = "";
 
     static {
@@ -23,7 +24,51 @@ public class PreferenceInjector extends BaseInjector {
         primitves.put(Boolean.TYPE, Boolean.class);
         primitves.put(Character.TYPE, Character.class);
         primitves.put(Short.TYPE, Short.class);
+
+        ejectors.put(Integer.class, new Ejector() {
+            @Override
+            public void eject(final SharedPreferences.Editor editor, final String key, final Object value) {
+                editor.putInt(key, (Integer) value);
+            }
+        });
+        ejectors.put(Long.class, new Ejector() {
+            @Override
+            public void eject(final SharedPreferences.Editor editor, final String key, final Object value) {
+                editor.putLong(key, (Long) value);
+            }
+        });
+        ejectors.put(Float.class, new Ejector() {
+            @Override
+            public void eject(final SharedPreferences.Editor editor, final String key, final Object value) {
+                editor.putFloat(key, (Float) value);
+            }
+        });
+        ejectors.put(Double.class, new Ejector() {
+            @Override
+            public void eject(final SharedPreferences.Editor editor, final String key, final Object value) {
+                editor.putFloat(key, ((Double) value).floatValue());
+            }
+        });
+
+        ejectors.put(Boolean.class, new Ejector() {
+            @Override
+            public void eject(final SharedPreferences.Editor editor, final String key, final Object value) {
+                editor.putBoolean(key, ((Boolean) value));
+            }
+        });
+
+        ejectors.put(String.class, new Ejector() {
+            @Override
+            public void eject(final SharedPreferences.Editor editor, final String key, final Object value) {
+                editor.putString(key, ((String) value));
+            }
+        });
     }
+
+    interface Ejector {
+        void eject(final SharedPreferences.Editor editor, final String key, final Object value);
+    }
+
 
     /**
      * load values from preference manager and inject them into target object
@@ -40,7 +85,7 @@ public class PreferenceInjector extends BaseInjector {
             if (injectPreference != null) {
 
                 String key = injectPreference.key();
-                
+
                 if (EMPTY.equals(key)) {
                     key = field.getName();
                 }
@@ -61,7 +106,6 @@ public class PreferenceInjector extends BaseInjector {
                 }
             }
         }
-
     }
 
     /**
@@ -70,6 +114,32 @@ public class PreferenceInjector extends BaseInjector {
      * @param target
      * @param preferences
      */
-    static void eject(Object target, SharedPreferences preferences) throws WiringException {
+    static void eject(Object target, SharedPreferences preferences) throws WiringException, IllegalAccessException {
+
+        final SharedPreferences.Editor editor = preferences.edit();
+
+        for (Field field : extractFields(target)) {
+            // does field contain annotation?
+            final InjectPreference injectPreference = field.getAnnotation(InjectPreference.class);
+            if (null != injectPreference) {
+                Class<?> type = field.getType();
+                if (type.isPrimitive()) {
+                    type = primitves.get(type);
+                }
+
+                // have a strategy?
+                if (ejectors.containsKey(type)) {
+                    String key = injectPreference.key();
+
+                    if (EMPTY.equals(key)) {
+                        key = field.getName();
+                    }
+                    field.setAccessible(true);
+                    ejectors.get(type).eject(editor, key, field.get(target));
+                    field.setAccessible(false);
+                }
+            }
+        }
+        editor.commit();
     }
 }
