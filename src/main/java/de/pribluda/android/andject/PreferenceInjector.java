@@ -114,7 +114,7 @@ public class PreferenceInjector extends BaseInjector {
      * @param target
      * @param preferences
      */
-    static void eject(Object target, SharedPreferences preferences) throws WiringException, IllegalAccessException {
+    public static void eject(Object target, SharedPreferences preferences) throws WiringException, IllegalAccessException {
 
         final SharedPreferences.Editor editor = preferences.edit();
 
