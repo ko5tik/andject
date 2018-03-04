@@ -102,6 +102,21 @@ public class PreferenceInjector extends BaseInjector {
                         field.setAccessible(true);
                         field.set(target, preference);
                         field.setAccessible(false);
+                    }  else {
+                        // set primitive from string
+                        if (Byte.class.equals(fieldType)) {
+                            field.set(target, Byte.parseByte((String) preference));
+                        } else if (Double.class.equals(fieldType)) {
+                            field.set(target, Double.parseDouble((String) preference));
+                        } else if (Float.class.equals(fieldType)) {
+                            field.set(target, Float.parseFloat((String) preference));
+                        } else if (Integer.class.equals(fieldType)) {
+                            field.set(target, Integer.parseInt((String) preference));
+                        } else if (Long.class.equals(fieldType)) {
+                            field.set(target,  Long.parseLong((String) preference));
+                        } else if (Short.class.equals(fieldType)) {
+                            field.set(target,  Short.parseShort((String) preference));
+                        }
                     }
                 }
             }

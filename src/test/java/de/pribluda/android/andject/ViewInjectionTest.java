@@ -119,7 +119,7 @@ public class ViewInjectionTest {
     @Test
     public void testThatSetterInjectionWorksProperly
             (
-                    @Mocked(methods = {"setAsView", "setButton", "notInjected"}, inverse = true) final WithInjectableMethods injectable,
+                    @Mocked("findViewById") final WithInjectableMethods injectable,
                     @Mocked final TextView textView,
                     @Mocked final Button button) {
         new Expectations() {
@@ -149,7 +149,7 @@ public class ViewInjectionTest {
     @Test
     public void testThatSetterInjectionIsBombedProperlyOnNonAssignability
             (
-                    @Mocked(methods = {"setAsView", "setButton", "notInjected"}, inverse = true) final WithInjectableMethods injectable,
+                    @Mocked final WithInjectableMethods injectable,
                     @Mocked final TextView textView,
                     @Mocked final Button button) {
 
@@ -178,7 +178,7 @@ public class ViewInjectionTest {
     @Test
     public void testThatMissingContentIsBombed
             (
-                    @Mocked(methods = {"setAsView", "setButton", "notInjected"}, inverse = true) final WithInjectableMethods injectable,
+                    @Mocked final WithInjectableMethods injectable,
                     @Mocked final TextView textView,
                     @Mocked final Button button) {
 

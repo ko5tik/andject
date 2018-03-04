@@ -4,8 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * designates field or method  as target for preference value injection.
- * fields shall be assignable from one of types provided  by shared preferences, or have
- * constructor taking single argument of such type
+ * fields shall be assignable from one of types provided  by shared preferences
  *
  * @author Konstantin Pribluda
  */
@@ -15,7 +14,7 @@ import java.lang.annotation.*;
 
 public @interface InjectPreference {
     /**
-     * preference key, required
+     * preference key defautls to field name
      * @return
      */
     String key() default "";
